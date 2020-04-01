@@ -1,0 +1,23 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="https://gwent.one//ss/eimg.css">
+<link rel="stylesheet" type="text/css" href="https://gwent.one//ss/export/cardart.css">
+<link rel="stylesheet" type="text/css" href="https://gwent.one//ss/export/asset.css">
+</head>
+<body style="background:black">
+<div class="card-art">
+	<div class="gwent_card art_size-med card_color-{{ card.color.lower() }} card_type-{{ card.type.lower() }} card_rarity-{{ card.rarity.lower() }} card_faction-{{ card.faction.lower().replace(' ', '_') }}" style="width: 249px; height: 357px;">
+		<div class="card_asset-img art_id-{{ card.artid.lower() }}p"></div>
+		<div class="card_asset-border"></div>
+		<div class="card_asset-provision-icon"></div>
+		{% if card.has_provisions() %} <div class="card_asset-provision"><div class="card_asset-provision-{{ card.get_provisions() }}"></div></div> {% endif %}
+		{% if card.has_armor() %} <div class="card_asset-armor"><div class="card_asset-armor-{{ card.armor }}"></div></div> {% endif %}
+		<div class="card_asset-banner">
+			{% if card.has_power() %} <div class="card_asset-strength-{{ card.power }}"></div>{% endif %}
+			<div class="card_asset-trinket"></div>
+			<div class="card_asset-rarity"></div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
