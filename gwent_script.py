@@ -49,6 +49,7 @@ card_template = create_template("data/gwent/card.html")
 glossary_template = create_template("data/gwent/glossary.html")
 csv_row_template = create_template("data/csv_row.csv")
 
+
 def handle(card: CardData, file, synonyms: dict):
     print(f"{card.id} {card.name_en}")
     filename = to_filename(card)

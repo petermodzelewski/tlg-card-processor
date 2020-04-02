@@ -1,4 +1,4 @@
-# tlg-card-processor
+# TLG card processor
 
 ## Setup
 1) Get https://wkhtmltopdf.org and have `wkhtmltoimage` in your system `PATH` env 
@@ -8,19 +8,30 @@
 pip install -r requirements.txt
 ```
 
-## Prepare
+## Gwent
 
-1) Make sure that `cards.json` is the newest one from https://gwent.one/api/cardlist
+### Preparation
+* Make sure that `data/gwent/cards.json` is the newest one from https://gwent.one/api/cardlist
 ```
-curl https://gwent.one/api/cardlist --output cards.json
+curl https://gwent.one/api/cardlist --output data/gwent/cards.json
 ```
-2) Make sure that `export.csv` is the newest export from glossary plugin from wordpress
+* Make sure that `data/export.csv` is the newest export from glossary plugin from wordpress
 
-## Run script
+### Generating data 
+* Run `gwent_script.py`. It takes a while.
 
-Run `script.py`. It takes a while.
+### Upload
+* Copy files from `result/gwent/images` to `/public_html/wp-content/uploads/gwent_cards` on 184.168.146.20
+* Upload `result/gwent/gwent-import.csv` in the glossary plugin settings in wordpress
 
-## Upload data
+## LOR
+### Preparation
+* Make sure that `data/lor/cards.json` is the newest one from https://developer.riotgames.com/docs/lor#data-dragon_core-bundles  (https://dd.b.pvp.net/latest/core-en_us.zip pack)
+* Make sure that `data/export.csv` is the newest export from glossary plugin from wordpress
 
-1) Copy files from `./images` to `/public_html/wp-content/uploads/gwent_cards` on 184.168.146.20
-2) Upload `import.csv` in the glossary plugin settings in wordpress
+### Generating data 
+* Run `lor_script.py`
+
+### Upload
+* Copy files from the pack to `/public_html/wp-content/uploads/lor_cards` on 184.168.146.20
+* Upload `result/lor/lor-import.csv` in the glossary plugin settings in wordpress
