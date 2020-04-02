@@ -6,9 +6,10 @@ import pandas as pd
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from jinja2 import Template
+from pathlib import Path
 
 version = int(round(time.time() * 1000))
-
+Path("result/lor").mkdir(parents=True, exist_ok=True)
 
 @dataclass_json
 @dataclass
@@ -23,8 +24,8 @@ def create_template(filename: str):
     return Template(html_template)
 
 
-glossary_template = create_template("lor_card_glossary.html")
-csv_row_template = create_template("csv_row.csv")
+glossary_template = create_template("data/lor/lor_card_glossary.html")
+csv_row_template = create_template("data/csv_row.csv")
 
 
 def add_csv_line(card, file, current_synonyms: list):
@@ -41,7 +42,7 @@ def add_csv_line(card, file, current_synonyms: list):
 
 
 if __name__ == '__main__':
-    result_file = open('lor-import.csv', 'w', encoding='utf-8')
+    result_file = open('result/lor/lor-import.csv', 'w', encoding='utf-8')
     result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
 
     with open('data/lor/cards.json', 'r', encoding='utf-8') as file:

@@ -6,8 +6,11 @@ import pandas as pd
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from jinja2 import Template
+from pathlib import Path
 
 version = int(round(time.time() * 1000))
+Path("result/gwent/html").mkdir(parents=True, exist_ok=True)
+Path("result/gwent/images").mkdir(parents=True, exist_ok=True)
 
 
 @dataclass_json
@@ -49,13 +52,13 @@ def create_template(filename: str):
     return Template(html_template)
 
 
-card_template = create_template("card.html")
-glossary_template = create_template("glossary.html")
-csv_row_template = create_template("csv_row.csv")
+card_template = create_template("data/gwent/card.html")
+glossary_template = create_template("data/gwent/glossary.html")
+csv_row_template = create_template("data/csv_row.csv")
 
 
 def build_synonyms():
-    export_data = pd.read_csv('export.csv', usecols=["Title", "Categories", "Synonyms"], keep_default_na=False)
+    export_data = pd.read_csv('data/export.csv', usecols=["Title", "Categories", "Synonyms"], keep_default_na=False)
     cards = export_data[export_data['Categories'] == "gwent_card"]
     synonyms = {}
     for index, row in cards.iterrows():
@@ -66,8 +69,8 @@ def build_synonyms():
 def handle(card: CardData, file, synonyms: dict):
     print(f"{card.id} {card.name_en}")
     filename = to_filename(card)
-    html_file = f"result/{filename}.html"
-    jpg_file = f"images/{filename}.jpg"
+    html_file = f"result/gwent/html/{filename}.html"
+    jpg_file = f"result/gwent/images/{filename}.jpg"
     render_card(card, html_file, jpg_file)
     add_csv_line(card, file, filename, get_current_synonyms(card, synonyms))
 
@@ -108,9 +111,9 @@ def to_filename(card: CardData):
 if __name__ == '__main__':
     synonyms_dict = build_synonyms()
 
-    result_file = open('import.csv', 'w', encoding='utf-8')
+    result_file = open('result/gwent/gwent-import.csv', 'w', encoding='utf-8')
     result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
-    with open('cards.json', 'r', encoding='utf-8') as file:
+    with open('data/gwent/cards.json', 'r', encoding='utf-8') as file:
         data = file.read().replace('\n', '')
 
     d = json.loads(data)
@@ -119,5 +122,7 @@ if __name__ == '__main__':
         print(f"{i}/{n}")
         card = CardData.from_dict(d[str(i)])
         handle(card, result_file, synonyms_dict)
+        if i > 10:
+            break
 
     result_file.close()
