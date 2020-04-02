@@ -2,11 +2,10 @@ import json
 import re
 import os
 import time
-import pandas as pd
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from jinja2 import Template
 from pathlib import Path
+from common import create_template, build_synonyms
 
 version = int(round(time.time() * 1000))
 Path("result/gwent/html").mkdir(parents=True, exist_ok=True)
@@ -46,25 +45,9 @@ class CardData:
         return int(self.provisionLeader)
 
 
-def create_template(filename: str):
-    with open(filename, encoding='utf-8') as template:
-        html_template = template.read()
-    return Template(html_template)
-
-
 card_template = create_template("data/gwent/card.html")
 glossary_template = create_template("data/gwent/glossary.html")
 csv_row_template = create_template("data/csv_row.csv")
-
-
-def build_synonyms():
-    export_data = pd.read_csv('data/export.csv', usecols=["Title", "Categories", "Synonyms"], keep_default_na=False)
-    cards = export_data[export_data['Categories'] == "gwent_card"]
-    synonyms = {}
-    for index, row in cards.iterrows():
-        synonyms[row['Title']] = row['Synonyms'].split(',')
-    return synonyms
-
 
 def handle(card: CardData, file, synonyms: dict):
     print(f"{card.id} {card.name_en}")
@@ -109,7 +92,7 @@ def to_filename(card: CardData):
 
 
 if __name__ == '__main__':
-    synonyms_dict = build_synonyms()
+    synonyms_dict = build_synonyms("gwent_card")
 
     result_file = open('result/gwent/gwent-import.csv', 'w', encoding='utf-8')
     result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
@@ -122,7 +105,5 @@ if __name__ == '__main__':
         print(f"{i}/{n}")
         card = CardData.from_dict(d[str(i)])
         handle(card, result_file, synonyms_dict)
-        if i > 10:
-            break
 
     result_file.close()

@@ -1,15 +1,13 @@
 import json
-import re
-import os
 import time
-import pandas as pd
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from jinja2 import Template
 from pathlib import Path
+from common import create_template, build_synonyms
 
 version = int(round(time.time() * 1000))
 Path("result/lor").mkdir(parents=True, exist_ok=True)
+
 
 @dataclass_json
 @dataclass
@@ -18,10 +16,11 @@ class CardData:
     cardCode: str
 
 
-def create_template(filename: str):
-    with open(filename, encoding='utf-8') as template:
-        html_template = template.read()
-    return Template(html_template)
+def get_current_synonyms(card: CardData, synonyms: dict):
+    if card.name in synonyms.keys():
+        return synonyms[card.name]
+    else:
+        return []
 
 
 glossary_template = create_template("data/lor/lor_card_glossary.html")
@@ -37,11 +36,14 @@ def add_csv_line(card, file, current_synonyms: list):
             current_synonyms.append(synonyms)
     new_synonyms = ",".join(current_synonyms)
     category = "lor_card"
-    glossary = csv_row_template.render(card_name=card.name, description=description, synonyms=new_synonyms, category=category)
+    glossary = csv_row_template.render(card_name=card.name, description=description, synonyms=new_synonyms,
+                                       category=category)
     file.write(f"{glossary}\n")
 
 
 if __name__ == '__main__':
+    synonyms_dict = build_synonyms("lor_card")
+
     result_file = open('result/lor/lor-import.csv', 'w', encoding='utf-8')
     result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
 
@@ -52,6 +54,6 @@ if __name__ == '__main__':
     for card_data in d:
         card = CardData.from_dict(card_data)
         print(f"{card.name}: {card.cardCode}")
-        add_csv_line(card, result_file, [])
+        add_csv_line(card, result_file, get_current_synonyms(card, synonyms_dict))
 
     result_file.close()
