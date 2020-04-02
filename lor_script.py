@@ -1,6 +1,8 @@
 import json
 import time
 from dataclasses import dataclass
+from typing import List
+
 from dataclasses_json import dataclass_json
 from pathlib import Path
 from common import create_template, build_synonyms
@@ -14,6 +16,17 @@ Path("result/lor").mkdir(parents=True, exist_ok=True)
 class CardData:
     name: str
     cardCode: str
+    associatedCardRefs: List[str]
+    collectible: bool
+    supertype: str
+
+    def get_card_codes(self):
+        result = [self.cardCode]
+        result.extend(self.associatedCardRefs)
+        return result
+
+    def should_process(self):
+        return (self.supertype is not "Champion") or self.collectible
 
 
 def get_current_synonyms(card: CardData, synonyms: dict):
@@ -54,6 +67,7 @@ if __name__ == '__main__':
     for card_data in d:
         card = CardData.from_dict(card_data)
         print(f"{card.name}: {card.cardCode}")
-        add_csv_line(card, result_file, get_current_synonyms(card, synonyms_dict))
+        if card.should_process():
+            add_csv_line(card, result_file, get_current_synonyms(card, synonyms_dict))
 
     result_file.close()

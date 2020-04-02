@@ -1,1 +1,1 @@
-<img class="aligncenter wp-image-15599 size-full" src="https://teamleviathangaming.com/wp-content/uploads/lor_cards/{{ card.cardCode }}.png?v={{ version }}" alt="">
+<div>{% for card_code in card.get_card_codes() %}<img src="https://teamleviathangaming.com/wp-content/uploads/lor_cards/{{ card_code }}.png?v={{ version }}" width="249" height="357">{% endfor %}</div>
