@@ -87,7 +87,9 @@ def add_csv_line(card, file, filename, current_synonyms: list):
             current_synonyms.append(synonyms)
     description = glossary_html.replace("\"", "\"\"")
     new_synonyms = ",".join(current_synonyms)
-    file.write(f"{csv_row_template.render(card=card, description=description, synonyms=new_synonyms)}\n")
+    category = "gwent_card"
+    glossary = csv_row_template.render(card_name=card.name_en, description=description, synonyms=new_synonyms, category=category)
+    file.write(f"{glossary}\n")
 
 
 def render_card(card, html_file, jpg_file):

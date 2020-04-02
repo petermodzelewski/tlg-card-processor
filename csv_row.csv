@@ -1,1 +1,1 @@
-"","{{ card.name_en }}","","{{ description }}","{{ synonyms }}","","gwent_card"
+"","{{ card_name }}","","{{ description }}","{{ synonyms }}","","{{ category }}"
