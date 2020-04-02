@@ -11,6 +11,9 @@ pip install -r requirements.txt
 ## Prepare
 
 1) Make sure that `cards.json` is the newest one from https://gwent.one/api/cardlist
+```
+curl https://gwent.one/api/cardlist --output cards.json
+```
 2) Make sure that `export.csv` is the newest export from glossary plugin from wordpress
 
 ## Run script
