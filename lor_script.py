@@ -27,10 +27,14 @@ glossary_template = create_template("lor_card_glossary.html")
 csv_row_template = create_template("csv_row.csv")
 
 
-def add_csv_line(card, file):
+def add_csv_line(card, file, current_synonyms: list):
     glossary_html = glossary_template.render(version=version, card=card)
     description = glossary_html.replace("\"", "\"\"")
-    new_synonyms = ""
+    if "'" in card.name:
+        synonyms = card.name.replace("'", "")
+        if synonyms not in current_synonyms:
+            current_synonyms.append(synonyms)
+    new_synonyms = ",".join(current_synonyms)
     category = "lor_card"
     glossary = csv_row_template.render(card_name=card.name, description=description, synonyms=new_synonyms, category=category)
     file.write(f"{glossary}\n")
@@ -47,6 +51,6 @@ if __name__ == '__main__':
     for card_data in d:
         card = CardData.from_dict(card_data)
         print(f"{card.name}: {card.cardCode}")
-        add_csv_line(card, result_file)
+        add_csv_line(card, result_file, [])
 
     result_file.close()
