@@ -101,8 +101,8 @@ if __name__ == '__main__':
         data = file.read().replace('\n', '')
 
     d = json.loads(data)
-    n = 905
-    for i in range(900, n):
+    n = 906
+    for i in range(0, n):
         print(f"{i}/{n}")
         card = CardData.from_dict(d[str(i)])
         handle(card, result_file, synonyms_dict)
