@@ -55,7 +55,7 @@ def handle(card: CardData, file, synonyms: dict):
     filename = to_filename(card)
     html_file = f"result/gwent/html/{filename}.html"
     jpg_file = f"result/gwent/images/{filename}.jpg"
-    #render_card(card, html_file, jpg_file)
+    render_card(card, html_file, jpg_file)
     add_csv_line(card, file, filename, get_current_synonyms(card, synonyms))
 
 
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     d = json.loads(data)
     n = 905
-    for i in range(0, n):
+    for i in range(900, n):
         print(f"{i}/{n}")
         card = CardData.from_dict(d[str(i)])
         handle(card, result_file, synonyms_dict)
