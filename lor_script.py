@@ -2,7 +2,6 @@ import json
 import time
 from dataclasses import dataclass
 from typing import List
-from collections import defaultdict
 from dataclasses_json import dataclass_json
 from pathlib import Path
 from common import create_template, build_synonyms
@@ -58,18 +57,21 @@ if __name__ == '__main__':
 
     d = json.loads(data)
     cards = [CardData.from_dict(card_data) for card_data in d]
-    cards_by_name = defaultdict(list)
+    cards_by_code = {}
     for card in cards:
-        cards_by_name[card.name].append(card)
+        cards_by_code[card.cardCode] = card
 
-    for name in cards_by_name.keys():
-        cards = cards_by_name[name]
-        cards = [x for x in sorted(cards, key=lambda x: len(x.cardCode))]
-        first_card = cards[0]
-        print(name, len(cards), first_card)
-        if first_card.supertype == "Champion":
-            add_csv_line(name, cards, result_file, get_current_synonyms(name, synonyms_dict))
+    for card in cards:
+        if (card.supertype == "Champion") and card.collectible:
+            associated_cards = [cards_by_code[code] for code in card.associatedCardRefs]
+            lvl2_card = [card for card in associated_cards if card.supertype == "Champion"][0]
+            print(f"Adding champion {card.name}, {lvl2_card.name}")
+            add_csv_line(card.name, [card, lvl2_card], result_file, get_current_synonyms(card.name, synonyms_dict))
         else:
-            add_csv_line(name, [first_card], result_file, get_current_synonyms(name, synonyms_dict))
+            if card.supertype != "Champion":
+                print(f"Adding regular {card.name}")
+                add_csv_line(card.name, [card], result_file, get_current_synonyms(card.name, synonyms_dict))
+            # else:
+            #     print(f"Ignoring {card}")
 
     result_file.close()
