@@ -2,7 +2,7 @@ import json
 import time
 from dataclasses import dataclass
 from typing import List
-
+from collections import defaultdict
 from dataclasses_json import dataclass_json
 from pathlib import Path
 from common import create_template, build_synonyms
@@ -20,18 +20,10 @@ class CardData:
     collectible: bool
     supertype: str
 
-    def get_card_codes(self):
-        result = [self.cardCode]
-        result.extend(self.associatedCardRefs)
-        return result
 
-    def should_process(self):
-        return (self.supertype is not "Champion") or self.collectible
-
-
-def get_current_synonyms(card: CardData, synonyms: dict):
-    if card.name in synonyms.keys():
-        return synonyms[card.name]
+def get_current_synonyms(card_name: str, synonyms: dict):
+    if card_name in synonyms.keys():
+        return synonyms[card_name]
     else:
         return []
 
@@ -40,16 +32,17 @@ glossary_template = create_template("data/lor/lor_card_glossary.html")
 csv_row_template = create_template("data/csv_row.csv")
 
 
-def add_csv_line(card, file, current_synonyms: list):
-    glossary_html = glossary_template.render(version=version, card=card)
+def add_csv_line(card_name: str, cards: list, file, current_synonyms: list):
+    codes = [x.cardCode for x in cards]
+    glossary_html = glossary_template.render(version=version, codes=codes)
     description = glossary_html.replace("\"", "\"\"")
-    if "'" in card.name:
-        synonyms = card.name.replace("'", "")
+    if "'" in card_name:
+        synonyms = card_name.replace("'", "")
         if synonyms not in current_synonyms:
             current_synonyms.append(synonyms)
     new_synonyms = ",".join(current_synonyms)
     category = "lor_card"
-    glossary = csv_row_template.render(card_name=card.name, description=description, synonyms=new_synonyms,
+    glossary = csv_row_template.render(card_name=card_name, description=description, synonyms=new_synonyms,
                                        category=category)
     file.write(f"{glossary}\n")
 
@@ -64,10 +57,19 @@ if __name__ == '__main__':
         data = file.read().replace('\n', '')
 
     d = json.loads(data)
-    for card_data in d:
-        card = CardData.from_dict(card_data)
-        print(f"{card.name}: {card.cardCode}")
-        if card.should_process():
-            add_csv_line(card, result_file, get_current_synonyms(card, synonyms_dict))
+    cards = [CardData.from_dict(card_data) for card_data in d]
+    cards_by_name = defaultdict(list)
+    for card in cards:
+        cards_by_name[card.name].append(card)
+
+    for name in cards_by_name.keys():
+        cards = cards_by_name[name]
+        cards = [x for x in sorted(cards, key=lambda x: len(x.cardCode))]
+        first_card = cards[0]
+        print(name, len(cards), first_card)
+        if first_card.supertype == "Champion":
+            add_csv_line(name, cards, result_file, get_current_synonyms(name, synonyms_dict))
+        else:
+            add_csv_line(name, [first_card], result_file, get_current_synonyms(name, synonyms_dict))
 
     result_file.close()
