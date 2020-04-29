@@ -26,12 +26,14 @@ curl https://gwent.one/api/cardlist --output data/gwent/cards.json
 
 ## LOR
 ### Preparation
-* Make sure that `data/lor/cards.json` is the newest one from https://developer.riotgames.com/docs/lor#data-dragon_core-bundles  (https://dd.b.pvp.net/latest/core-en_us.zip pack)
+* Make sure that `data/lor/*.json` is the newest one from https://developer.riotgames.com/docs/lor#data-dragon_core-bundles 
+    *  https://dd.b.pvp.net/latest/set1-en_us.zip 
+    *  https://dd.b.pvp.net/latest/set2-en_us.zip 
 * Make sure that `data/export.csv` is the newest export from glossary plugin from wordpress
 
 ### Generating data 
 * Run `lor_script.py`
 
 ### Upload
-* Copy files from the pack to `/public_html/wp-content/uploads/lor_cards` on 184.168.146.20
+* Copy files from the pack to `/home1/teamlev1/public_html/wp-content/uploads/lor_cards` on teamleviathangaming.com
 * Upload `result/lor/lor-import.csv` in the glossary plugin settings in wordpress

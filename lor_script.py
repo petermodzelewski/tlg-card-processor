@@ -46,21 +46,14 @@ def add_csv_line(card_name: str, cards: list, file, current_synonyms: list):
     file.write(f"{glossary}\n")
 
 
-if __name__ == '__main__':
-    synonyms_dict = build_synonyms("lor_card")
-
-    result_file = open('result/lor/lor-import.csv', 'w', encoding='utf-8')
-    result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
-
-    with open('data/lor/cards.json', 'r', encoding='utf-8') as file:
+def process_cards_file():
+    with open(f"data/lor/{cards_file}", 'r', encoding='utf-8') as file:
         data = file.read().replace('\n', '')
-
     d = json.loads(data)
     cards = [CardData.from_dict(card_data) for card_data in d]
     cards_by_code = {}
     for card in cards:
         cards_by_code[card.cardCode] = card
-
     for card in cards:
         if (card.supertype == "Champion") and card.collectible:
             associated_cards = [cards_by_code[code] for code in card.associatedCardRefs]
@@ -73,5 +66,15 @@ if __name__ == '__main__':
                 add_csv_line(card.name, [card], result_file, get_current_synonyms(card.name, synonyms_dict))
             # else:
             #     print(f"Ignoring {card}")
+
+
+if __name__ == '__main__':
+    synonyms_dict = build_synonyms("lor_card")
+
+    result_file = open('result/lor/lor-import.csv', 'w', encoding='utf-8')
+    result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
+
+    for cards_file in ["set1-en_us.json", "set2-en_us.json"]:
+        process_cards_file()
 
     result_file.close()

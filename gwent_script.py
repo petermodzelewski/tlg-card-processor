@@ -36,13 +36,10 @@ class CardData:
         return int(self.power) > 0
 
     def has_provisions(self):
-        return self.get_provisions() > 0
+        return int(self.provision) > 0
 
-    def get_provisions(self):
-        int_prov = int(self.provision)
-        if int_prov > 0:
-            return int_prov
-        return int(self.provisionLeader)
+    def has_leader_provisions(self):
+        return int(self.provisionLeader) > 0
 
 
 card_template = create_template("data/gwent/card.html")
