@@ -16,17 +16,16 @@ Path("result/gwent/images").mkdir(parents=True, exist_ok=True)
 @dataclass
 class CardData:
     id: str
-    name_en: str
+    name: str
     category: str
     faction: str
     power: str
     armor: str
     provision: str
-    provisionLeader: str
     color: str
     type: str
     rarity: str
-    ability_en_html: str
+    abilityHMTL: str
     artid: str
 
     def has_armor(self):
@@ -36,10 +35,18 @@ class CardData:
         return int(self.power) > 0
 
     def has_provisions(self):
-        return int(self.provision) > 0
+        return (not self.has_leader_provisions()) and int(self.provision) > 0
 
     def has_leader_provisions(self):
-        return int(self.provisionLeader) > 0
+        return self.category == "Leader"
+
+    def get_type(self):
+        if self.category.lower() == "leader":
+            return "leader"
+        if self.type.lower() == "special":
+            return "spell"
+        else:
+            return self.type.lower()
 
 
 card_template = create_template("data/gwent/card.html")
@@ -48,7 +55,7 @@ csv_row_template = create_template("data/csv_row.csv")
 
 
 def handle(card: CardData, file, synonyms: dict):
-    print(f"{card.id} {card.name_en}")
+    print(f"{card.id} {card.name}")
     filename = to_filename(card)
     html_file = f"result/gwent/html/{filename}.html"
     jpg_file = f"result/gwent/images/{filename}.jpg"
@@ -57,22 +64,22 @@ def handle(card: CardData, file, synonyms: dict):
 
 
 def get_current_synonyms(card: CardData, synonyms: dict):
-    if card.name_en in synonyms.keys():
-        return synonyms[card.name_en]
+    if card.name in synonyms.keys():
+        return synonyms[card.name]
     else:
         return []
 
 
 def add_csv_line(card, file, filename, current_synonyms: list):
     glossary_html = glossary_template.render(card=card, jpg_file=f"{filename}.jpg", version=version)
-    if "'" in card.name_en:
-        synonyms = card.name_en.replace("'", "")
+    if "'" in card.name:
+        synonyms = card.name.replace("'", "")
         if synonyms not in current_synonyms:
             current_synonyms.append(synonyms)
     description = glossary_html.replace("\"", "\"\"")
     new_synonyms = ",".join(current_synonyms)
     category = "gwent_card"
-    glossary = csv_row_template.render(card_name=card.name_en, description=description, synonyms=new_synonyms, category=category)
+    glossary = csv_row_template.render(card_name=card.name, description=description, synonyms=new_synonyms, category=category)
     file.write(f"{glossary}\n")
 
 
@@ -84,7 +91,7 @@ def render_card(card, html_file, jpg_file):
 
 
 def to_filename(card: CardData):
-    filename = card.name_en.lower().replace(" ", "_")
+    filename = card.name.lower().replace(" ", "_")
     filename = re.sub(r'\W+', '', filename)
     return filename
 

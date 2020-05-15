@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ### Preparation
 * Make sure that `data/gwent/cards.json` is the newest one from https://gwent.one/api/cardlist
 ```
-curl https://gwent.one/api/cardlist --output data/gwent/cards.json
+curl https://gwent.one/api/cardlist?key=w7eoMVT6xb4bKbi2V8rnxw --output data/gwent/cards.json
 ```
 * Make sure that `data/export.csv` is the newest export from glossary plugin from wordpress
 
@@ -21,7 +21,7 @@ curl https://gwent.one/api/cardlist --output data/gwent/cards.json
 * Run `gwent_script.py`. It takes a while.
 
 ### Upload
-* Copy files from `result/gwent/images` to `/public_html/wp-content/uploads/gwent_cards` on 184.168.146.20
+* Copy files from `result/gwent/images` to `/public_html/wp-content/uploads/gwent_cards` on teamleviathangaming.com
 * Upload `result/gwent/gwent-import.csv` in the glossary plugin settings in wordpress
 
 ## LOR

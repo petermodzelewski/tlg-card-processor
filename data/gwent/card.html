@@ -6,7 +6,7 @@
 </head>
 <body style="background:black">
 <div class="card-art">
-	<div class="gwent_card art_size-med card_color-{{ card.color.lower() }} card_type-{{ card.type.lower() }} card_rarity-{{ card.rarity.lower() }} card_faction-{{ card.faction.lower().replace(' ', '_') }}" style="width: 249px; height: 357px;">
+	<div class="gwent_card art_size-med card_color-{{ card.color.lower() }} card_type-{{ card.get_type() }} card_rarity-{{ card.rarity.lower() }} card_faction-{{ card.faction.lower().replace(' ', '_') }}" style="width: 249px; height: 357px;">
 		<div class="card_asset-img art_id-{{ card.artid.lower() }}p"></div>
 		<div class="card_asset-border"></div>
 		<div class="card_asset-banner">
@@ -15,7 +15,7 @@
 			<div class="card_asset-rarity"></div>
 		</div>
 		{% if card.has_provisions() %} <div class="card_asset-provision-icon"></div> <div class="card_asset-provision"><div class="card_asset-provision-{{ card.provision }}"></div></div> {% endif %}
-		{% if card.has_leader_provisions() %} <div class="card_asset-leader-provision"><div class="card_asset-leader-{{ card.provisionLeader }}"></div></div> {% endif %}
+		{% if card.has_leader_provisions() %} <div class="card_asset-leader-provision"><div class="card_asset-leader-{{ card.provision }}"></div></div> {% endif %}
 		{% if card.has_armor() %} <div class="card_asset-armor"><div class="card_asset-armor-{{ card.armor }}"></div></div> {% endif %}
 
 	</div>
