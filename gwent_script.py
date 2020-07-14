@@ -105,7 +105,7 @@ if __name__ == '__main__':
         data = file.read().replace('\n', '')
 
     d = json.loads(data)
-    n = 906
+    n = 1000
     for i in range(0, n):
         print(f"{i}/{n}")
         card = CardData.from_dict(d[str(i)])
