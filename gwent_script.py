@@ -25,7 +25,7 @@ class CardData:
     color: str
     type: str
     rarity: str
-    abilityHMTL: str
+    abilityHTML: str
     artid: str
 
     def has_armor(self):
