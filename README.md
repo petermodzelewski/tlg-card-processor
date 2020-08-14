@@ -22,7 +22,7 @@ curl https://gwent.one/api/cardlist?key=w7eoMVT6xb4bKbi2V8rnxw --output data/gwe
 
 ### Upload
 * Copy files from `result/gwent/images` to `/public_html/wp-content/uploads/gwent_cards` on teamleviathangaming.com
-* Upload `result/gwent/gwent-import.csv` in the glossary plugin settings in wordpress
+* Upload `result/gwent/gwent-import_X.csv` files in the glossary plugin settings in wordpress (they are limmited to 500 per csv so wordpress will not time out)
 
 ## LOR
 ### Preparation

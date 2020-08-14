@@ -1,7 +1,9 @@
 import json
+import math
 import re
 import os
 import time
+from concurrent.futures.thread import ThreadPoolExecutor
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from pathlib import Path
@@ -11,6 +13,7 @@ version = int(round(time.time() * 1000))
 Path("result/gwent/html").mkdir(parents=True, exist_ok=True)
 Path("result/gwent/images").mkdir(parents=True, exist_ok=True)
 
+executor = ThreadPoolExecutor(max_workers=8)
 
 @dataclass_json
 @dataclass
@@ -59,7 +62,8 @@ def handle(card: CardData, file, synonyms: dict):
     filename = to_filename(card)
     html_file = f"result/gwent/html/{filename}.html"
     jpg_file = f"result/gwent/images/{filename}.jpg"
-    render_card(card, html_file, jpg_file)
+    executor.submit(render_card, card, html_file, jpg_file)
+    # render_card(card, html_file, jpg_file)
     add_csv_line(card, file, filename, get_current_synonyms(card, synonyms))
 
 
@@ -99,16 +103,26 @@ def to_filename(card: CardData):
 if __name__ == '__main__':
     synonyms_dict = build_synonyms("gwent_card")
 
-    result_file = open('result/gwent/gwent-import.csv', 'w', encoding='utf-8')
-    result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
     with open('data/gwent/cards.json', 'r', encoding='utf-8') as file:
         data = file.read().replace('\n', '')
 
     d = json.loads(data)
-    n = 1000
-    for i in range(0, n):
-        print(f"{i}/{n}")
-        card = CardData.from_dict(d[str(i)])
-        handle(card, result_file, synonyms_dict)
+    n = len(d.keys())
+    max_per_file = 500
+    files_num = math.ceil(n/500)
+    print(f"n={n}")
+    print(f"files_num={files_num}")
 
-    result_file.close()
+    for f in range(0, files_num):
+        print(f"File {f+1}/{files_num}")
+        result_file = open(f'result/gwent/gwent-import_{f}.csv', 'w', encoding='utf-8')
+        result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
+        start = f * max_per_file
+        for i in range(start, start + max_per_file):
+            if i < n:
+                print(f"Card {i+1}/{n}")
+                card = CardData.from_dict(d[str(i)])
+                handle(card, result_file, synonyms_dict)
+        result_file.close()
+
+    executor.shutdown()
