@@ -46,7 +46,7 @@ def add_csv_line(card_name: str, cards: list, file, current_synonyms: list):
     file.write(f"{glossary}\n")
 
 
-def process_cards_file():
+def process_cards_file(cards_file: str):
     with open(f"data/lor/{cards_file}", 'r', encoding='utf-8') as file:
         data = file.read().replace('\n', '')
     d = json.loads(data)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     result_file = open('result/lor/lor-import.csv', 'w', encoding='utf-8')
     result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
 
-    for cards_file in ["set1-en_us.json", "set2-en_us.json"]:
-        process_cards_file()
+    for file in ["set1-en_us.json", "set2-en_us.json", "set3-en_us.json"]:
+        process_cards_file(file)
 
     result_file.close()
