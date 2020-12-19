@@ -63,7 +63,7 @@ def handle(card: CardData, file, synonyms: dict):
     html_file = f"result/gwent/html/{filename}.html"
     jpg_file = f"result/gwent/images/{filename}.jpg"
     executor.submit(render_card, card, html_file, jpg_file)
-    # render_card(card, html_file, jpg_file)
+    render_card(card, html_file, jpg_file)
     add_csv_line(card, file, filename, get_current_synonyms(card, synonyms))
 
 
