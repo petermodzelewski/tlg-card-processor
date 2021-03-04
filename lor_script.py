@@ -71,7 +71,7 @@ def process_cards_file(cards_file: str):
 if __name__ == '__main__':
     synonyms_dict = build_synonyms("lor_card")
 
-    for file in ["set1-en_us.json", "set2-en_us.json", "set3-en_us.json"]:
+    for file in ["set1-en_us.json", "set2-en_us.json", "set3-en_us.json", "set4-en_us.json"]:
         set = file.split("-")[0]
         result_file = open(f"result/lor/lor-import-{set}-.csv", 'w', encoding='utf-8')
         result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
