@@ -45,9 +45,9 @@ class CardData:
 
     def get_type(self):
         if self.category.lower() == "leader":
-            return "leader"
+            return "ability"
         if self.type.lower() == "special":
-            return "spell"
+            return "special"
         else:
             return self.type.lower()
 
