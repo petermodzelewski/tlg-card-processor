@@ -30,6 +30,8 @@ curl https://gwent.one/api/cardlist?key=w7eoMVT6xb4bKbi2V8rnxw --output data/gwe
     *  https://dd.b.pvp.net/latest/set1-en_us.zip 
     *  https://dd.b.pvp.net/latest/set2-en_us.zip
     *  https://dd.b.pvp.net/latest/set3-en_us.zip  
+    *  https://dd.b.pvp.net/latest/set4-en_us.zip
+    *  https://dd.b.pvp.net/latest/set5-en_us.zip
 * Make sure that `data/export.csv` is the newest export from glossary plugin from wordpress
 
 ### Generating data 

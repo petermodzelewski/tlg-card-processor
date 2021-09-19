@@ -2,7 +2,7 @@
 rm -rf result/lor/cards
 mkdir -p result/lor/cards
 
-declare -a SetArray=("1" "2" "3" "4")
+declare -a SetArray=("1" "2" "3" "4" "5")
 
 for val in ${SetArray[@]}; do
   SET="set$val-en_us"

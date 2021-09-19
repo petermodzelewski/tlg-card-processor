@@ -56,7 +56,7 @@ def process_cards_file(cards_file: str):
         cards_by_code[card.cardCode] = card
     for card in cards:
         if (card.supertype == "Champion") and card.collectible:
-            associated_cards = [cards_by_code[code] for code in card.associatedCardRefs]
+            associated_cards = [cards_by_code[code] for code in card.associatedCardRefs if code in cards_by_code]
             lvl2_card = [card for card in associated_cards if card.supertype == "Champion"][0]
             print(f"Adding champion {card.name}, {lvl2_card.name}")
             add_csv_line(card.name, [card, lvl2_card], result_file, get_current_synonyms(card.name, synonyms_dict))
@@ -71,7 +71,8 @@ def process_cards_file(cards_file: str):
 if __name__ == '__main__':
     synonyms_dict = build_synonyms("lor_card")
 
-    for file in ["set1-en_us.json", "set2-en_us.json", "set3-en_us.json", "set4-en_us.json"]:
+    for file in ["set1-en_us.json", "set2-en_us.json", "set3-en_us.json", "set4-en_us.json", "set5-en_us.json"]:
+        print(file)
         set = file.split("-")[0]
         result_file = open(f"result/lor/lor-import-{set}-.csv", 'w', encoding='utf-8')
         result_file.write('"Id","Title","Excerpt","Description","Synonyms","Variations","Categories"\n')
